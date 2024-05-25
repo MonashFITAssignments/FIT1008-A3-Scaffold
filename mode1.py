@@ -1,6 +1,7 @@
 from landsites import Land
 from algorithms.mergesort import mergesort
 from data_structures.bst import *
+from typing import Tuple
 
 class Mode1Navigator:
     """
@@ -21,10 +22,11 @@ class Mode1Navigator:
             Best Case: O(N log N) - Sorting the sites based on a specific ratio or criteria for efficient decision-making.
             Worst Case: O(N log N) - The same, as sorting dominates the initialization complexity.
         """
+
         self.adventurers = adventurers
-        self.sites = BinarySearchTree()
+        self.sites = BinarySearchTree[Land, float]()
         for site in sites:
-            self.sites[site.get_gold() / site.get_guardians()] = site
+            self.sites[site.get_gold() / site.get_guardians()] = site # Insert with comparison key
 
     def select_sites(self) -> list[tuple[Land, int]]:
         """
@@ -42,13 +44,12 @@ class Mode1Navigator:
         remaining_adventurers = self.adventurers
         selected_sites = []
 
-        for node in BSTInOrderIterator(self.sites.root):
+        for site in iter(self.sites):
             if remaining_adventurers == 0:
                 break
-            elif remaining_adventurers > 0:
-                adventurers_to_send = min(remaining_adventurers, node.item.guardians)
-                selected_sites.append((node, adventurers_to_send))
-                remaining_adventurers -= adventurers_to_send
+            adventurers_to_send = min(remaining_adventurers, site.item.get_guardians())
+            selected_sites.append((site.item, adventurers_to_send))
+            remaining_adventurers -= adventurers_to_send
 
         return selected_sites
 
@@ -72,14 +73,14 @@ class Mode1Navigator:
             total_reward = 0
             remaining_adventurers = adventurers
 
-            for site in BSTInOrderIterator(self.sites.root):
+            for node in iter(self.sites):
+                site = node.item
                 if remaining_adventurers == 0:
                     break
-                if site.guardians > 0:
-                    adventurers_to_send = min(remaining_adventurers, site.item.guardians)
-                    reward = min((adventurers_to_send / site.item.guardians) * site.item.gold, site.item.gold)
-                    total_reward += reward
-                    remaining_adventurers -= adventurers_to_send
+                adventurers_to_send = min(remaining_adventurers, site.get_guardians())
+                reward = min((adventurers_to_send / site.get_guardians()) * site.get_gold(), site.get_gold())
+                total_reward += reward
+                remaining_adventurers -= adventurers_to_send
 
             rewards.append(total_reward)
 
@@ -98,10 +99,10 @@ class Mode1Navigator:
             Best Case: O(1) - Direct assignment of new values.
             Worst Case: O(log(N)) - The same, as the operation involves only a few direct assignments.
         """
-        del self.sites[land.gold / land.guardians]
-        land.gold = new_reward
-        land.guardians = new_guardians
-        self.sites[land.gold / land.guardians] = land
+        key = land.get_gold() / land.get_guardians()
+        land.set_gold(new_reward)
+        land.set_guardians(new_guardians)
+        self.sites[key] = land
         
 if __name__ == "__main__":
     a = Land("A", 400, 100)
@@ -118,4 +119,5 @@ if __name__ == "__main__":
         Land(e.get_name(), e.get_gold(), e.get_guardians()),
     ]
     nav = Mode1Navigator(sites, 200)
-    nav.select_sites()
+    ans = nav.select_sites()
+    print(ans)
