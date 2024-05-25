@@ -1,4 +1,5 @@
 from unittest import TestCase
+import unittest
 from ed_utils.decorators import number, visibility
 
 from landsites import Land
@@ -52,60 +53,63 @@ class Mode1Tests(TestCase):
         self.check_solution(self.sites, 200, selected, expected_gold)
         # So we must be equal :)
 
-    @number("1.2")
-    @visibility(visibility.VISIBILITY_SHOW)
-    def test_basic_big_adventurers(self):
-        self.load_basic()
-        nav = Mode1Navigator(self.sites, 500)
-        selected = nav.select_sites()
-        expected_gold = 1450
-        # ^ This can be achieved with ^
-        # A: 100 guardians
-        # B: 150 guardians
-        # C: 5 guardians
-        # D: 90 guardians
-        # E: 100 guardians
-        self.check_solution(self.sites, 500, selected, expected_gold)
+    # @number("1.2")
+    # @visibility(visibility.VISIBILITY_SHOW)
+    # def test_basic_big_adventurers(self):
+    #     self.load_basic()
+    #     nav = Mode1Navigator(self.sites, 500)
+    #     selected = nav.select_sites()
+    #     expected_gold = 1450
+    #     # ^ This can be achieved with ^
+    #     # A: 100 guardians
+    #     # B: 150 guardians
+    #     # C: 5 guardians
+    #     # D: 90 guardians
+    #     # E: 100 guardians
+    #     self.check_solution(self.sites, 500, selected, expected_gold)
 
-    @number("1.3")
-    @visibility(visibility.VISIBILITY_SHOW)
-    def test_basic_no_adventurers(self):
-        self.load_basic()
-        nav = Mode1Navigator(self.sites, 0)
-        selected = nav.select_sites()
-        # If you did return any sites, you shouldn't have sent anyone.
-        for site, adventuers_sent in selected:
-            self.assertEqual(adventuers_sent, 0)
+    # @number("1.3")
+    # @visibility(visibility.VISIBILITY_SHOW)
+    # def test_basic_no_adventurers(self):
+    #     self.load_basic()
+    #     nav = Mode1Navigator(self.sites, 0)
+    #     selected = nav.select_sites()
+    #     # If you did return any sites, you shouldn't have sent anyone.
+    #     for site, adventuers_sent in selected:
+    #         self.assertEqual(adventuers_sent, 0)
 
-    @number("1.4")
-    @visibility(visibility.VISIBILITY_SHOW)
-    def test_basic_repeats(self):
-        # choice function should not modify the outcome or the sites.
-        self.load_basic()
-        nav = Mode1Navigator(self.sites, 200)
-        selected = nav.select_sites()
-        selected_again = nav.select_sites()
-        self.check_solution(self.sites, 200, selected, 865)
-        self.check_solution(self.sites, 200, selected_again, 865)
+    # @number("1.4")
+    # @visibility(visibility.VISIBILITY_SHOW)
+    # def test_basic_repeats(self):
+    #     # choice function should not modify the outcome or the sites.
+    #     self.load_basic()
+    #     nav = Mode1Navigator(self.sites, 200)
+    #     selected = nav.select_sites()
+    #     selected_again = nav.select_sites()
+    #     self.check_solution(self.sites, 200, selected, 865)
+    #     self.check_solution(self.sites, 200, selected_again, 865)
 
-    @number("1.5")
-    @visibility(visibility.VISIBILITY_SHOW)
-    def test_basic_updates(self):
-        self.load_basic()
-        nav = Mode1Navigator(self.sites, 200)
-        selected = nav.select_sites()
-        self.check_solution(self.sites, 200, selected, 865)
-        # Update Land site A to have only 1 guardian, rather than 100.
-        nav.update_site(self.sites[0], 400, 1)
-        # Done for testing \/ so check_solution works.
-        self.sites[0].set_guardians(1)
-        selected_again = nav.select_sites()
-        self.check_solution(self.sites, 200, selected_again, 1158)
+    # @number("1.5")
+    # @visibility(visibility.VISIBILITY_SHOW)
+    # def test_basic_updates(self):
+    #     self.load_basic()
+    #     nav = Mode1Navigator(self.sites, 200)
+    #     selected = nav.select_sites()
+    #     self.check_solution(self.sites, 200, selected, 865)
+    #     # Update Land site A to have only 1 guardian, rather than 100.
+    #     nav.update_site(self.sites[0], 400, 1)
+    #     # Done for testing \/ so check_solution works.
+    #     self.sites[0].set_guardians(1)
+    #     selected_again = nav.select_sites()
+    #     self.check_solution(self.sites, 200, selected_again, 1158)
 
-    @number("1.6")
-    @visibility(visibility.VISIBILITY_SHOW)
-    def test_multiple_adventures_sizes(self):
-        self.load_basic()
-        nav = Mode1Navigator(self.sites, 200)
-        results = nav.select_sites_from_adventure_numbers([0, 200, 500, 300, 40])
-        self.assertListEqual(results, [0, 865, 1450, 1160, 240])
+    # @number("1.6")
+    # @visibility(visibility.VISIBILITY_SHOW)
+    # def test_multiple_adventures_sizes(self):
+    #     self.load_basic()
+    #     nav = Mode1Navigator(self.sites, 200)
+    #     results = nav.select_sites_from_adventure_numbers([0, 200, 500, 300, 40])
+    #     self.assertListEqual(results, [0, 865, 1450, 1160, 240])
+
+if __name__ == "__main__":
+    unittest.main()

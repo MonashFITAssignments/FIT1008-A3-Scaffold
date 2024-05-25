@@ -1,5 +1,4 @@
 from landsites import Land
-from algorithms.mergesort import mergesort
 from data_structures.bst import *
 from typing import Tuple
 
@@ -22,9 +21,8 @@ class Mode1Navigator:
             Best Case: O(N log N) - Sorting the sites based on a specific ratio or criteria for efficient decision-making.
             Worst Case: O(N log N) - The same, as sorting dominates the initialization complexity.
         """
-
         self.adventurers = adventurers
-        self.sites = BinarySearchTree[Land, float]()
+        self.sites = BinarySearchTree()
         for site in sites:
             self.sites[site.get_gold() / site.get_guardians() if site.guardians != 0 else float('inf')] = site # Insert with comparison key
 
@@ -43,7 +41,6 @@ class Mode1Navigator:
         """
         remaining_adventurers = self.adventurers
         selected_sites = []
-
         for node in iter(self.sites):
             site = node.item
             if remaining_adventurers == 0:
@@ -102,7 +99,13 @@ class Mode1Navigator:
             Best Case: O(1) - Direct assignment of new values.
             Worst Case: O(log(N)) - The same, as the operation involves only a few direct assignments.
         """
+        for key, value in self.sites:
+            if value.name == land.name:
+                print(key, value)
+                
         key = land.get_gold() / land.get_guardians()
+        print(key)
+
         land.set_gold(new_reward)
         land.set_guardians(new_guardians)
         self.sites[key] = land
