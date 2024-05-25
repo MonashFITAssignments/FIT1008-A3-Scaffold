@@ -26,7 +26,7 @@ class Mode1Navigator:
         self.adventurers = adventurers
         self.sites = BinarySearchTree[Land, float]()
         for site in sites:
-            self.sites[site.get_gold() / site.get_guardians()] = site # Insert with comparison key
+            self.sites[site.get_gold() / site.get_guardians() if site.guardians != 0 else float('inf')] = site # Insert with comparison key
 
     def select_sites(self) -> list[tuple[Land, int]]:
         """
@@ -44,12 +44,14 @@ class Mode1Navigator:
         remaining_adventurers = self.adventurers
         selected_sites = []
 
-        for site in iter(self.sites):
+        for node in iter(self.sites):
+            site = node.item
             if remaining_adventurers == 0:
                 break
-            adventurers_to_send = min(remaining_adventurers, site.item.get_guardians())
-            selected_sites.append((site.item, adventurers_to_send))
-            remaining_adventurers -= adventurers_to_send
+            if site.gold > 0 and site.guardians > 0:
+                adventurers_to_send = min(remaining_adventurers, site.get_guardians())
+                selected_sites.append((site, adventurers_to_send))
+                remaining_adventurers -= adventurers_to_send
 
         return selected_sites
 
@@ -70,17 +72,18 @@ class Mode1Navigator:
         rewards = []
 
         for adventurers in adventure_numbers:
-            total_reward = 0
+            total_reward = 0.0
             remaining_adventurers = adventurers
 
             for node in iter(self.sites):
                 site = node.item
                 if remaining_adventurers == 0:
                     break
-                adventurers_to_send = min(remaining_adventurers, site.get_guardians())
-                reward = min((adventurers_to_send / site.get_guardians()) * site.get_gold(), site.get_gold())
-                total_reward += reward
-                remaining_adventurers -= adventurers_to_send
+                if site.gold > 0 and site.guardians > 0:
+                    adventurers_to_send = min(remaining_adventurers, site.get_guardians())
+                    reward = min(adventurers_to_send * (site.get_gold() / site.get_guardians()), site.get_gold())
+                    total_reward += reward
+                    remaining_adventurers -= adventurers_to_send
 
             rewards.append(total_reward)
 
