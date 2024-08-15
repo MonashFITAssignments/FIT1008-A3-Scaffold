@@ -1,4 +1,5 @@
 from unittest import TestCase
+import unittest
 from ed_utils.decorators import number, visibility
 
 from landsites import Land
@@ -109,3 +110,6 @@ class Mode1Tests(TestCase):
         nav = Mode1Navigator(self.sites, 200)
         results = nav.select_sites_from_adventure_numbers([0, 200, 500, 300, 40])
         self.assertListEqual(results, [0, 865, 1450, 1160, 240])
+
+if __name__ == "__main__":
+    unittest.main()

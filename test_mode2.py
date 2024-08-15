@@ -1,4 +1,5 @@
 from unittest import TestCase
+import unittest
 from ed_utils.decorators import number, visibility
 
 from landsites import Land
@@ -36,7 +37,6 @@ class Mode2Tests(TestCase):
         nav = Mode2Navigator(8)
         nav.add_sites(self.sites)
         results = nav.simulate_day(100)
-
         # The first team makes 400 gold by going to land site A and sending 100 their adventurers.
         # Final score: 400 + 0*2.5 = 400
         # The second team makes 375 gold by going to land site D and sending 90 of their adventurers.
@@ -129,3 +129,6 @@ class Mode2Tests(TestCase):
             # Score
             score = 2.5 * (100 - sent_adventurers) + received
             self.assertEqual(score, expected)
+
+if __name__ == "__main__":
+    unittest.main()
